@@ -121,7 +121,7 @@ class AboutScreen extends StatelessWidget {
                 runSpacing: 7,
                 children: [
                   AppPill(icon: Icons.flutter_dash_rounded, label: 'Flutter'),
-                  AppPill(icon: Icons.storage_rounded, label: 'SharedPreferences'),
+                  AppPill(icon: Icons.storage_rounded, label: 'SQLite'),
                   AppPill(icon: Icons.phone_android_rounded, label: 'Mobile'),
                   AppPill(icon: Icons.dark_mode_rounded, label: 'Tema escuro'),
                 ],

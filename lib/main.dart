@@ -1,15 +1,34 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/theme_controller.dart';
+import 'core/storage/local_storage.dart';
+import 'core/storage/sqlite_storage.dart';
 import 'data/services/theme_service.dart';
+import 'data/services/student_service.dart';
 
 final _isDarkMode = signal<bool>(false);
+Signal<bool> get globalIsDarkMode => _isDarkMode;
+
+late final ThemeService themeService;
+late final StudentService studentService;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final isDark = await ThemeService().carregarTema();
+  if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
+  final LocalStorage storage = SqliteStorage();
+
+  themeService = ThemeService(storage);
+  studentService = StudentService(storage);
+
+  final isDark = await themeService.carregarTema();
   _isDarkMode.value = isDark;
 
   runApp(const PiramidGameApp());
@@ -32,5 +51,3 @@ class PiramidGameApp extends StatelessWidget {
     });
   }
 }
-
-Signal<bool> get globalIsDarkMode => _isDarkMode;

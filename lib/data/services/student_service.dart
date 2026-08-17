@@ -1,35 +1,40 @@
 import 'dart:convert';
-
-import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../core/storage/local_storage.dart';
 import '../../domain/models/student_model.dart';
+import '../../core/storage/storage_instance.dart';
 
 class StudentService {
   static const String _storageKey = 'students';
   static const String _legacyStorageKey = 'alunos';
 
-  Future<List<Student>> loadAll() async {
-    final prefs = await SharedPreferences.getInstance();
+  final LocalStorage _storage;
 
-    final raw = prefs.getString(_storageKey) ?? prefs.getString(_legacyStorageKey);
+  StudentService([LocalStorage? storage]) : _storage = storage ?? appStorage;
+
+  Future<List<Student>> loadAll() async {
+    final raw = await _storage.getString(_storageKey) ?? 
+                await _storage.getString(_legacyStorageKey);
+
     if (raw == null || raw.trim().isEmpty) return [];
 
-    final decoded = jsonDecode(raw);
-    if (decoded is! List) return [];
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return [];
 
-    return decoded
-        .whereType<Map>()
-        .map((item) => Student.fromJson(Map<String, dynamic>.from(item)))
-        .toList();
+      return decoded
+          .whereType<Map>()
+          .map((item) => Student.fromJson(Map<String, dynamic>.from(item)))
+          .toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   Future<bool> saveAll(List<Student> students) async {
-    final prefs = await SharedPreferences.getInstance();
     final raw = jsonEncode(students.map((student) => student.toJson()).toList());
-    return prefs.setString(_storageKey, raw);
+    return _storage.setString(_storageKey, raw);
   }
 
-  // Aliases em português para compatibilidade com código antigo.
   Future<List<Student>> buscarTodos() => loadAll();
   Future<bool> salvar(List<Student> students) => saveAll(students);
 }

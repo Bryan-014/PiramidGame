@@ -35,7 +35,6 @@ class StudentRepository {
     }
   }
 
-  // Aliases em português para compatibilidade com código antigo.
   Future<Result<List<Student>>> buscarTodos() => loadAll();
   Future<Result<Student?>> buscarPorId(String id) => loadById(id);
   Future<Result<bool>> salvar(List<Student> students) => save(students);

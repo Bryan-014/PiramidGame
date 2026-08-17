@@ -1,19 +1,21 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/storage/local_storage.dart';
+import '../../core/storage/storage_instance.dart';
 
 class ThemeService {
   static const String _storageKey = 'isDarkMode';
+  final LocalStorage _storage;
+
+  ThemeService([LocalStorage? storage]) : _storage = storage ?? appStorage;
 
   Future<bool> loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_storageKey) ?? false;
+    final isDark = await _storage.getBool(_storageKey);
+    return isDark ?? false;
   }
 
   Future<bool> saveTheme(bool isDark) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.setBool(_storageKey, isDark);
+    return _storage.setBool(_storageKey, isDark);
   }
 
-  // Aliases em português para manter compatibilidade com main.dart/código antigo.
   Future<bool> carregarTema() => loadTheme();
   Future<bool> salvarTema(bool isDark) => saveTheme(isDark);
 }
