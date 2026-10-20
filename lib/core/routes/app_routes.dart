@@ -16,6 +16,33 @@ final appRouter = GoRouter(
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/cadastro',
+      builder: (context, state) => const CadastroUsuarioScreen(),
+    ),
+    GoRoute(
+      path: '/pessoa/nova',
+      builder: (context, state) => const PessoaFormScreen(),
+    ),
+    GoRoute(
+      path: '/pessoa/editar',
+      builder: (context, state) =>
+          PessoaFormScreen(pessoaId: state.extra as String),
+    ),
+    GoRoute(
+      path: '/pessoa/detalhe',
+      builder: (context, state) =>
+          PessoaDetailScreen(pessoaId: state.extra as String),
+    ),
+    GoRoute(
+      path: '/avaliacao',
+      builder: (context, state) =>
+          AvaliacaoScreen(pessoaId: state.extra as String),
+    ),
+    GoRoute(
       path: '/student/new',
       builder: (context, state) => const StudentFormScreen(),
     ),
